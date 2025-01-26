@@ -1,78 +1,211 @@
 # Prototype-For-Urban-Eaterier
-It is A prototype for IDT Assignment
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from 'react-native';
 
- This will be a simplified skeleton, not a complete, fully working application.
+const dummyData = [
+  {
+    id: '1',
+    name: 'Cafe Delight',
+    category: 'cafe',
+    cuisine: 'American',
+    location: 'Downtown',
+    price: '$',
+    rating: 4.5,
+    image: 'https://placehold.co/100x100',
+    description: 'Cozy cafe with great coffee',
+  },
+  {
+    id: '2',
+    name: 'Spice Route',
+    category: 'hotel',
+    cuisine: 'Indian',
+    location: 'Uptown',
+    price: '$$',
+    rating: 4.2,
+    image: 'https://placehold.co/100x100',
+    description: 'Authentic Indian food',
+  },
+  {
+    id: '3',
+    name: 'Street Eats',
+    category: 'street food',
+    cuisine: 'Local',
+    location: 'Market Square',
+    price: '$',
+    rating: 4.7,
+    image: 'https://placehold.co/100x100',
+    description: 'Delicious street food at low prices',
+  },
+    {
+    id: '4',
+    name: 'Pizza Palace',
+    category: 'hotel',
+    cuisine: 'Italian',
+    location: 'Suburb',
+    price: '$$$',
+    rating: 4.0,
+        image: 'https://placehold.co/100x100',
+        description: 'Authentic Italian pizza and dishes'
+  },
+  {
+    id: '5',
+    name: 'Brew Hub',
+    category: 'cafe',
+    cuisine: 'Coffee',
+    location: 'Tech Park',
+    price: '$',
+    rating: 4.8,
+    image: 'https://placehold.co/100x100',
+    description: 'Excellent coffee and light snacks'
+  }
 
-Key Limitations:
+];
 
-No Backend: There is no actual backend database or API. The data is simulated with dummy data.
-
-Simplified UI: The UI is basic and intended to illustrate the core structure rather than a polished design.
-
-Limited Functionality: Some features described in the report (like user profiles, real-time updates) are not included in this example.
-
-No Maps Integration: Map functionality is simulated with a basic placeholder.
-
-Requires React Native Setup: You'll need to have React Native development tools set up to run this code.
+const App = () => {
+  const [searchText, setSearchText] = useState('');
+    const [selectedItem, setSelectedItem] = useState(null);
 
 
+  const filteredData = dummyData.filter((item) =>
+    item.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+        onPress={() => setSelectedItem(item)}
+      style={styles.listItem}
+    >
+      <Image
+        source={{ uri: item.image }}
+        style={styles.listImage}
+        />
+      <View style={styles.listItemText}>
+      <Text style={styles.itemTitle}>{item.name}</Text>
+        <Text>{item.category}, {item.cuisine}</Text>
+         <Text>Rating: {item.rating}</Text>
+          <Text>Price: {item.price}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderDetails = () => {
+    if (!selectedItem) return null;
+
+    return (
+        <ScrollView style={styles.detailContainer}>
+        <Image source={{ uri: selectedItem.image }} style={styles.detailImage} />
+          <Text style={styles.detailTitle}>{selectedItem.name}</Text>
+            <Text style={styles.detailText}>{selectedItem.category}, {selectedItem.cuisine}</Text>
+        <Text style={styles.detailText}>Location: {selectedItem.location}</Text>
+        <Text style={styles.detailText}>Price: {selectedItem.price}</Text>
+        <Text style={styles.detailText}>Rating: {selectedItem.rating}</Text>
+            <Text style={styles.detailText}>{selectedItem.description}</Text>
+          <TouchableOpacity
+               onPress={() => setSelectedItem(null)}
+            style={styles.backButton}
+          >
+              <Text style={styles.backButtonText}>Back to List</Text>
+            </TouchableOpacity>
+      </ScrollView>
+    );
+  };
 
 
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search places"
+        value={searchText}
+        onChangeText={(text) => setSearchText(text)}
+      />
+      {selectedItem ? (
+        renderDetails()
+      ) : (
+        <FlatList
+          data={filteredData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      )}
+    </View>
+  );
+};
 
-Explanation:
-
-Imports: Imports necessary components from React Native.
-
-dummyData Array: This is where the "data" for your eateries is stored. In a real app, you'd get this from an API or database.
-
-App Function:
-
-searchText State: Manages the search input value.
-
-filteredData: Filters the dummy data based on the searchText.
-
-selectedItem: Used to keep track of the selected place for the detail view.
-
-renderItem Function: Renders each eatery as a list item with a basic layout.
-
-renderDetails Function: Renders the details of selected eatery.
-
-UI Structure: Renders a TextInput for search, and a FlatList to display the eateries.
-
-StyleSheet: Contains basic styling for the components.
-
-
-
-
-
-Next Steps (For a More Complete App):
-
-Backend Development:
-
-Set up a Node.js/Express backend.
-
-Create a MongoDB or Firebase database.
-
-Develop API endpoints for fetching, adding, and updating eatery data.
-
-Advanced UI:
-
-Use React Native UI libraries (like React Native Paper, Native Base) for more polished UI.
-
-Implement navigation between screens.
-
-Add more complex components, like search filters, map integration, and user profiles.
-
-State Management: Use a state management library (like Redux or Context API) for complex state logic.
-
-Testing: Write unit and integration tests.
-
-Deployment: Deploy the app to app stores.
-
-Important Notes:
-
-This code is a starting point. It's not intended to be production-ready.
-
-You'll need to customize the code to meet your exact project requirements and design.
-
-React Native development is an involved process. Be prepared to learn more as you proceed.
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+    listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#f9f9f9'
+  },
+  listItemText: {
+    flex: 1,
+    marginLeft: 10,
+  },
+    itemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+    listImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+      resizeMode:'cover',
+  },
+    detailContainer: {
+        flex: 1,
+      padding: 20
+    },
+    detailImage: {
+    width: '100%',
+    height: 200,
+        resizeMode: 'cover',
+        marginBottom: 10,
+    },
+  detailTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+      marginBottom: 10
+    },
+  detailText: {
+      fontSize: 16,
+      marginBottom: 5
+    },
+    backButton: {
+      backgroundColor: '#007bff',
+      padding: 10,
+      borderRadius: 5,
+        marginTop: 15,
+    },
+  backButtonText: {
+      color: 'white',
+    textAlign: 'center',
+  }
+};
